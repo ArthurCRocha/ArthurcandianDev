@@ -8,12 +8,37 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css">
     <style>
         :root {
+            /* Light mode variables */
             --primary: #ffffff;
             --secondary: #e63946;
             --dark: #000000;
             --light: #f1f1f1;
             --gray: #777777;
             --shadow: rgba(0, 0, 0, 0.1);
+            --bg-color: #ffffff;
+            --text-color: #000000;
+            --header-bg: rgba(0, 0, 0, 0.8);
+            --header-text: #ffffff;
+            --section-bg: rgba(255, 255, 255, 0.85);
+            --footer-bg: rgba(241, 241, 241, 0.9);
+            --card-bg: #ffffff;
+        }
+        
+        /* Dark mode variables */
+        .dark-mode {
+            --primary: #1a1a1a;
+            --secondary: #e63946;
+            --dark: #f1f1f1;
+            --light: #333333;
+            --gray: #aaaaaa;
+            --shadow: rgba(255, 255, 255, 0.1);
+            --bg-color: #121212;
+            --text-color: #f1f1f1;
+            --header-bg: rgba(26, 26, 26, 0.9);
+            --header-text: #ffffff;
+            --section-bg: rgba(26, 26, 26, 0.9);
+            --footer-bg: rgba(26, 26, 26, 0.9);
+            --card-bg: #1e1e1e;
         }
         
         * {
@@ -26,8 +51,8 @@
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             line-height: 1.6;
-            color: var(--dark);
-            background-color: var(--primary);
+            color: var(--text-color);
+            background-color: var(--bg-color);
         }
         
         .container {
@@ -37,8 +62,8 @@
         }
         
         header {
-            background: rgba(0, 0, 0, 0.8);
-            color: var(--primary);
+            background: var(--header-bg);
+            color: var(--header-text);
             padding: 60px 0 40px;
             text-align: center;
             position: relative;
@@ -170,7 +195,7 @@
             z-index: 1;
             backdrop-filter: blur(5px);
             -webkit-backdrop-filter: blur(5px);
-            background: rgba(255, 255, 255, 0.85);
+            background: var(--section-bg);
         }
         
         section.visible {
@@ -316,7 +341,7 @@
         }
         
         .project-card {
-            background: var(--primary);
+            background: var(--card-bg);
             border-radius: 8px;
             box-shadow: 0 5px 15px var(--shadow);
             padding: 25px;
@@ -335,7 +360,7 @@
             padding: 40px 0;
             color: var(--dark);
             font-size: 0.9rem;
-            background-color: rgba(241, 241, 241, 0.9);
+            background-color: var(--footer-bg);
             position: relative;
             z-index: 1;
             backdrop-filter: blur(5px);
@@ -415,17 +440,94 @@
             pointer-events: none; /* Permite que cliques passem pelo canvas */
             opacity: 0.6; /* Ajusta a opacidade para não competir com o conteúdo */
         }
+
+        /* Theme and Language toggle buttons */
+        .toggle-container {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            display: flex;
+            gap: 10px;
+            z-index: 1000;
+        }
+        
+        .toggle-btn {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: var(--secondary);
+            color: var(--primary);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+            border: none;
+            outline: none;
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+        
+        .toggle-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+        }
+        
+        .toggle-btn i {
+            font-size: 1.2rem;
+        }
+
+        /* Estilo para o container da animação de olho */
+        #eye-animation-container {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            overflow: hidden;
+            z-index: 1000;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+            transition: transform 0.3s;
+            cursor: pointer;
+        }
+        
+        #eye-animation-container:hover {
+            transform: scale(1.1);
+        }
+        
+        /* Para telas pequenas, reposicionar o olho */
+        @media (max-width: 768px) {
+            #eye-animation-container {
+                width: 80px;
+                height: 80px;
+                top: 10px;
+                left: 10px;
+            }
+        }
     </style>
 </head>
 <body>
     <!-- Canvas para Three.js -->
     <canvas id="bg-canvas"></canvas>
     
+    <!-- Container para animação de olho -->
+    <div id="eye-animation-container"></div>
+    
+    <!-- Theme and Language toggle buttons -->
+    <div class="toggle-container">
+        <button id="theme-toggle" class="toggle-btn" aria-label="Toggle dark/light mode">
+            <i class="fas fa-moon"></i>
+        </button>
+        <button id="lang-toggle" class="toggle-btn" aria-label="Toggle language">
+            <i class="fas fa-language"></i>
+        </button>
+    </div>
+    
     <header class="animate__animated animate__fadeIn">
         <div class="container">
             <div class="profile-container">
-                <h1 class="profile-name">ARTHUR CANDIAN ROCHA</h1>
-                <h2 class="profile-title">Estudante de Ciências da Computação</h2>
+                <h1 class="profile-name" data-en="ARTHUR CANDIAN ROCHA" data-pt="ARTHUR CANDIAN ROCHA">ARTHUR CANDIAN ROCHA</h1>
+                <h2 class="profile-title" data-en="Computer Science Student" data-pt="Estudante de Ciências da Computação">Estudante de Ciências da Computação</h2>
             </div>
             
             <div class="contact-info animate__animated animate__fadeInUp animate__delay-1s">
@@ -451,104 +553,106 @@
     
     <main class="container">
         <section id="resumo">
-            <h2 class="section-title">Resumo Profissional</h2>
-            <p>Estudante de Ciência da Computação com experiência em desenvolvimento web e design gráfico. Busco integrar conhecimentos técnicos e criativos para contribuir em projetos inovadores. Possuo experiência prática como estagiário de desenvolvimento web e em cargos de marketing, combinando habilidades técnicas com visão <span class="highlight">estratégica</span>.</p>
+            <h2 class="section-title" data-en="Professional Summary" data-pt="Resumo Profissional">Resumo Profissional</h2>
+            <p data-en="Computer Science student with experience in web development and graphic design. I seek to integrate technical and creative knowledge to contribute to innovative projects. I have practical experience as a web development intern and in marketing positions, combining technical skills with strategic vision." data-pt="Estudante de Ciência da Computação com experiência em desenvolvimento web e design gráfico. Busco integrar conhecimentos técnicos e criativos para contribuir em projetos inovadores. Possuo experiência prática como estagiário de desenvolvimento web e em cargos de marketing, combinando habilidades técnicas com visão estratégica.">
+                Estudante de Ciência da Computação com experiência em desenvolvimento web e design gráfico. Busco integrar conhecimentos técnicos e criativos para contribuir em projetos inovadores. Possuo experiência prática como estagiário de desenvolvimento web e em cargos de marketing, combinando habilidades técnicas com visão <span class="highlight">estratégica</span>.
+            </p>
         </section>
         
         <section id="formacao">
-            <h2 class="section-title">Formação Acadêmica</h2>
+            <h2 class="section-title" data-en="Education" data-pt="Formação Acadêmica">Formação Acadêmica</h2>
             <div class="education">
-                <h3>GRADUAÇÃO EM CIÊNCIA DA COMPUTAÇÃO</h3>
-                <div class="meta">Instituto Federal de Educação, Ciência e Tecnologia do Sudeste de Minas Gerais (IF Sudeste) - Campus Rio Pomba</div>
-                <div class="meta">2020 - Presente</div>
+                <h3 data-en="COMPUTER SCIENCE DEGREE" data-pt="GRADUAÇÃO EM CIÊNCIA DA COMPUTAÇÃO">GRADUAÇÃO EM CIÊNCIA DA COMPUTAÇÃO</h3>
+                <div class="meta" data-en="Federal Institute of Education, Science and Technology of Southeast Minas Gerais (IF Sudeste) - Rio Pomba Campus" data-pt="Instituto Federal de Educação, Ciência e Tecnologia do Sudeste de Minas Gerais (IF Sudeste) - Campus Rio Pomba">Instituto Federal de Educação, Ciência e Tecnologia do Sudeste de Minas Gerais (IF Sudeste) - Campus Rio Pomba</div>
+                <div class="meta" data-en="2020 - Present" data-pt="2020 - Presente">2020 - Presente</div>
             </div>
         </section>
         
         <section id="experiencia">
-            <h2 class="section-title">Experiência Profissional</h2>
+            <h2 class="section-title" data-en="Professional Experience" data-pt="Experiência Profissional">Experiência Profissional</h2>
             
             <div class="timeline">
                 <div class="timeline-item experience">
-                    <h3>ESTAGIÁRIO DE DESENVOLVIMENTO WEB</h3>
-                    <div class="meta">Metryx - Novembro/2024 a Fevereiro/2025</div>
+                    <h3 data-en="WEB DEVELOPMENT INTERN" data-pt="ESTAGIÁRIO DE DESENVOLVIMENTO WEB">ESTAGIÁRIO DE DESENVOLVIMENTO WEB</h3>
+                    <div class="meta" data-en="Metryx - November/2024 to February/2025" data-pt="Metryx - Novembro/2024 a Fevereiro/2025">Metryx - Novembro/2024 a Fevereiro/2025</div>
                     <ul class="responsibilities">
-                        <li>Implementação de novas funcionalidades no sistema web.</li>
-                        <li>Uso de frameworks e bibliotecas como Angular 18 e Groovy Grails.</li>
-                        <li>Participação em reuniões de planejamento e revisão de código.</li>
-                        <li>Colaboração com outros desenvolvedores e departamentos para garantir a entrega de projetos dentro do prazo.</li>
-                        <li>Identificação e correção de bugs no sistema.</li>
-                        <li>Melhoria de performance e usabilidade do sistema.</li>
-                        <li>Participação em sprints e uso de metodologias ágeis como Scrum.</li>
-                        <li>Uso de ferramentas de gestão de projetos como Jira.</li>
-                        <li>Criação e manutenção de documentação técnica para o sistema.</li>
-                        <li>Realização de testes unitários e de integração.</li>
+                        <li data-en="Implementation of new features in the web system." data-pt="Implementação de novas funcionalidades no sistema web.">Implementação de novas funcionalidades no sistema web.</li>
+                        <li data-en="Use of frameworks and libraries such as Angular 18 and Groovy Grails." data-pt="Uso de frameworks e bibliotecas como Angular 18 e Groovy Grails.">Uso de frameworks e bibliotecas como Angular 18 e Groovy Grails.</li>
+                        <li data-en="Participation in planning meetings and code reviews." data-pt="Participação em reuniões de planejamento e revisão de código.">Participação em reuniões de planejamento e revisão de código.</li>
+                        <li data-en="Collaboration with other developers and departments to ensure project delivery on time." data-pt="Colaboração com outros desenvolvedores e departamentos para garantir a entrega de projetos dentro do prazo.">Colaboração com outros desenvolvedores e departamentos para garantir a entrega de projetos dentro do prazo.</li>
+                        <li data-en="Identification and correction of bugs in the system." data-pt="Identificação e correção de bugs no sistema.">Identificação e correção de bugs no sistema.</li>
+                        <li data-en="Performance and usability improvement of the system." data-pt="Melhoria de performance e usabilidade do sistema.">Melhoria de performance e usabilidade do sistema.</li>
+                        <li data-en="Participation in sprints and use of agile methodologies such as Scrum." data-pt="Participação em sprints e uso de metodologias ágeis como Scrum.">Participação em sprints e uso de metodologias ágeis como Scrum.</li>
+                        <li data-en="Use of project management tools such as Jira." data-pt="Uso de ferramentas de gestão de projetos como Jira.">Uso de ferramentas de gestão de projetos como Jira.</li>
+                        <li data-en="Creation and maintenance of technical documentation for the system." data-pt="Criação e manutenção de documentação técnica para o sistema.">Criação e manutenção de documentação técnica para o sistema.</li>
+                        <li data-en="Execution of unit and integration tests." data-pt="Realização de testes unitários e de integração.">Realização de testes unitários e de integração.</li>
                     </ul>
                 </div>
                 
                 <div class="timeline-item experience">
-                    <h3>DIRETORIA DE MARKETING</h3>
-                    <div class="meta">Empresa Júnior EmComp - Janeiro/2023 a Dezembro/2023</div>
+                    <h3 data-en="MARKETING DIRECTOR" data-pt="DIRETORIA DE MARKETING">DIRETORIA DE MARKETING</h3>
+                    <div class="meta" data-en="Junior Company EmComp - January/2023 to December/2023" data-pt="Empresa Júnior EmComp - Janeiro/2023 a Dezembro/2023">Empresa Júnior EmComp - Janeiro/2023 a Dezembro/2023</div>
                     <ul class="responsibilities">
-                        <li>Liderança e gestão das estratégias de marketing da empresa júnior.</li>
-                        <li>Desenvolvimento e implementação de campanhas de marketing para promover os serviços da empresa.</li>
-                        <li>Coordenação de equipes para a criação de materiais promocionais e gestão das redes sociais.</li>
+                        <li data-en="Leadership and management of the company's marketing strategies." data-pt="Liderança e gestão das estratégias de marketing da empresa júnior.">Liderança e gestão das estratégias de marketing da empresa júnior.</li>
+                        <li data-en="Development and implementation of marketing campaigns to promote the company's services." data-pt="Desenvolvimento e implementação de campanhas de marketing para promover os serviços da empresa.">Desenvolvimento e implementação de campanhas de marketing para promover os serviços da empresa.</li>
+                        <li data-en="Coordination of teams for the creation of promotional materials and social media management." data-pt="Coordenação de equipes para a criação de materiais promocionais e gestão das redes sociais.">Coordenação de equipes para a criação de materiais promocionais e gestão das redes sociais.</li>
                     </ul>
                 </div>
                 
                 <div class="timeline-item experience">
-                    <h3>ESTAGIÁRIO EM COMUNICAÇÃO E EVENTOS</h3>
-                    <div class="meta">Instituto Federal Sudeste de Minas Gerais - Campus Rio Pomba - 01/02/2023 a 12/5/2023</div>
+                    <h3 data-en="COMMUNICATION AND EVENTS INTERN" data-pt="ESTAGIÁRIO EM COMUNICAÇÃO E EVENTOS">ESTAGIÁRIO EM COMUNICAÇÃO E EVENTOS</h3>
+                    <div class="meta" data-en="Federal Institute of Southeast Minas Gerais - Rio Pomba Campus - 01/02/2023 to 12/5/2023" data-pt="Instituto Federal Sudeste de Minas Gerais - Campus Rio Pomba - 01/02/2023 a 12/5/2023">Instituto Federal Sudeste de Minas Gerais - Campus Rio Pomba - 01/02/2023 a 12/5/2023</div>
                     <ul class="responsibilities">
-                        <li>Produção de Conteúdo Visual: Criação diária de cardápios e materiais gráficos para redes sociais.</li>
-                        <li>Design Gráfico: Desenvolvimento de artes para eventos comemorativos, campanhas institucionais e divulgação acadêmica.</li>
-                        <li>Organização de Eventos: Suporte na criação de materiais para eventos como Ciência na Praça, Semana Jurídica e Dia Verde.</li>
-                        <li>Suporte Técnico: Diagramação de projetos, mudança de domínio do site de pós-graduação e criação de elementos gráficos para a Rádio do Instituto.</li>
-                        <li>Comunicação Interna/Externa: Elaboração de convites, avisos institucionais e campanhas de comunicação.</li>
+                        <li data-en="Content Production: Daily creation of menus and graphic materials for social media." data-pt="Produção de Conteúdo Visual: Criação diária de cardápios e materiais gráficos para redes sociais.">Produção de Conteúdo Visual: Criação diária de cardápios e materiais gráficos para redes sociais.</li>
+                        <li data-en="Graphic Design: Development of artwork for commemorative events, institutional campaigns, and academic dissemination." data-pt="Design Gráfico: Desenvolvimento de artes para eventos comemorativos, campanhas institucionais e divulgação acadêmica.">Design Gráfico: Desenvolvimento de artes para eventos comemorativos, campanhas institucionais e divulgação acadêmica.</li>
+                        <li data-en="Event Organization: Support in creating materials for events such as Science in the Square, Legal Week, and Green Day." data-pt="Organização de Eventos: Suporte na criação de materiais para eventos como Ciência na Praça, Semana Jurídica e Dia Verde.">Organização de Eventos: Suporte na criação de materiais para eventos como Ciência na Praça, Semana Jurídica e Dia Verde.</li>
+                        <li data-en="Technical Support: Layout of projects, domain change of the postgraduate site, and creation of graphic elements for the Institute's Radio." data-pt="Suporte Técnico: Diagramação de projetos, mudança de domínio do site de pós-graduação e criação de elementos gráficos para a Rádio do Instituto.">Suporte Técnico: Diagramação de projetos, mudança de domínio do site de pós-graduação e criação de elementos gráficos para a Rádio do Instituto.</li>
+                        <li data-en="Internal/External Communication: Preparation of invitations, institutional notices, and communication campaigns." data-pt="Comunicação Interna/Externa: Elaboração de convites, avisos institucionais e campanhas de comunicação.">Comunicação Interna/Externa: Elaboração de convites, avisos institucionais e campanhas de comunicação.</li>
                     </ul>
                 </div>
             </div>
         </section>
         
         <section id="projetos">
-            <h2 class="section-title">Projetos</h2>
+            <h2 class="section-title" data-en="Projects" data-pt="Projetos">Projetos</h2>
             
             <div class="projects-grid">
                 <div class="project-card">
-                    <h3>Monitoria de Física 1</h3>
-                    <div class="meta">Janeiro de 2023 - Dezembro de 2024</div>
-                    <p class="description">Aulas revisionais e materiais de física 1 cinemática para alunos do Instituto Federal Sudeste de Minas Gerais.</p>
+                    <h3 data-en="Physics 1 Tutoring" data-pt="Monitoria de Física 1">Monitoria de Física 1</h3>
+                    <div class="meta" data-en="January 2023 - December 2024" data-pt="Janeiro de 2023 - Dezembro de 2024">Janeiro de 2023 - Dezembro de 2024</div>
+                    <p class="description" data-en="Review classes and physics 1 kinematics materials for students of the Federal Institute of Southeast Minas Gerais." data-pt="Aulas revisionais e materiais de física 1 cinemática para alunos do Instituto Federal Sudeste de Minas Gerais.">Aulas revisionais e materiais de física 1 cinemática para alunos do Instituto Federal Sudeste de Minas Gerais.</p>
                 </div>
                 
                 <div class="project-card">
-                    <h3>Trabalho de Conclusão de Curso - Otimização de Campanha de Tráfego Pago</h3>
-                    <div class="meta">Em desenvolvimento</div>
-                    <p class="description">Utilização de inteligência artificial a fins de melhorar campanhas de marketing digital utilizando Machine Learning.</p>
+                    <h3 data-en="Final Course Project - Paid Traffic Campaign Optimization" data-pt="Trabalho de Conclusão de Curso - Otimização de Campanha de Tráfego Pago">Trabalho de Conclusão de Curso - Otimização de Campanha de Tráfego Pago</h3>
+                    <div class="meta" data-en="In development" data-pt="Em desenvolvimento">Em desenvolvimento</div>
+                    <p class="description" data-en="Using artificial intelligence to improve digital marketing campaigns using Machine Learning." data-pt="Utilização de inteligência artificial a fins de melhorar campanhas de marketing digital utilizando Machine Learning.">Utilização de inteligência artificial a fins de melhorar campanhas de marketing digital utilizando Machine Learning.</p>
                 </div>
                 
                 <div class="project-card">
-                    <h3>Sistema de Coleta de Lixo</h3>
-                    <div class="meta">Projeto Universitário</div>
-                    <p class="description">Sistema feito em Java para fins didáticos da matéria Laboratório e Programação de Sistemas. Sistema para gerenciamento de uma empresa ou ONG de coleta de lixo urbana.</p>
+                    <h3 data-en="Garbage Collection System" data-pt="Sistema de Coleta de Lixo">Sistema de Coleta de Lixo</h3>
+                    <div class="meta" data-en="University Project" data-pt="Projeto Universitário">Projeto Universitário</div>
+                    <p class="description" data-en="System made in Java for didactic purposes of the subject Laboratory and Systems Programming. System for managing a company or NGO for urban garbage collection." data-pt="Sistema feito em Java para fins didáticos da matéria Laboratório e Programação de Sistemas. Sistema para gerenciamento de uma empresa ou ONG de coleta de lixo urbana.">Sistema feito em Java para fins didáticos da matéria Laboratório e Programação de Sistemas. Sistema para gerenciamento de uma empresa ou ONG de coleta de lixo urbana.</p>
                 </div>
                 
                 <div class="project-card">
-                    <h3>Sistema de Gerenciamento Financeiro</h3>
-                    <div class="meta">Projeto Universitário - Em Desenvolvimento</div>
-                    <p class="description">Sistema projetado para uma empresa de terraplenagem a fim de facilitar o gerenciamento financeiro da empresa.</p>
+                    <h3 data-en="Financial Management System" data-pt="Sistema de Gerenciamento Financeiro">Sistema de Gerenciamento Financeiro</h3>
+                    <div class="meta" data-en="University Project - In Development" data-pt="Projeto Universitário - Em Desenvolvimento">Projeto Universitário - Em Desenvolvimento</div>
+                    <p class="description" data-en="System designed for a land clearing company to facilitate the company's financial management." data-pt="Sistema projetado para uma empresa de terraplenagem a fim de facilitar o gerenciamento financeiro da empresa.">Sistema projetado para uma empresa de terraplenagem a fim de facilitar o gerenciamento financeiro da empresa.</p>
                 </div>
                 
                 <div class="project-card">
-                    <h3>Chatbot WhatsApp</h3>
-                    <div class="meta">Projeto Pessoal</div>
-                    <p class="description">Criação de um assistente virtual para o WhatsApp com o intuito de automatizar e melhorar a eficiência de atendimentos online.</p>
+                    <h3 data-en="WhatsApp Chatbot" data-pt="Chatbot WhatsApp">Chatbot WhatsApp</h3>
+                    <div class="meta" data-en="Personal Project" data-pt="Projeto Pessoal">Projeto Pessoal</div>
+                    <p class="description" data-en="Creation of a virtual assistant for WhatsApp to automate and improve the efficiency of online services." data-pt="Criação de um assistente virtual para o WhatsApp com o intuito de automatizar e melhorar a eficiência de atendimentos online.">Criação de um assistente virtual para o WhatsApp com o intuito de automatizar e melhorar a eficiência de atendimentos online.</p>
                 </div>
             </div>
         </section>
         
         <section id="competencias">
-            <h2 class="section-title">Competências Técnicas</h2>
+            <h2 class="section-title" data-en="Technical Skills" data-pt="Competências Técnicas">Competências Técnicas</h2>
             
-            <h3>Programação:</h3>
+            <h3 data-en="Programming:" data-pt="Programação:">Programação:</h3>
             <div class="skills-container">
                 <span class="skill">JavaScript</span>
                 <span class="skill">TypeScript</span>
@@ -558,13 +662,13 @@
                 <span class="skill">Groovy Grails</span>
             </div>
             
-            <h3 style="margin-top: 20px;">Design Gráfico:</h3>
+            <h3 style="margin-top: 20px;" data-en="Graphic Design:" data-pt="Design Gráfico:">Design Gráfico:</h3>
             <div class="skills-container">
                 <span class="skill">Canva</span>
-                <span class="skill">Diagramação de documentos</span>
+                <span class="skill" data-en="Document layout" data-pt="Diagramação de documentos">Diagramação de documentos</span>
             </div>
             
-            <h3 style="margin-top: 20px;">Ferramentas:</h3>
+            <h3 style="margin-top: 20px;" data-en="Tools:" data-pt="Ferramentas:">Ferramentas:</h3>
             <div class="skills-container">
                 <span class="skill">Git</span>
                 <span class="skill">IntelliJ</span>
@@ -574,26 +678,26 @@
                 <span class="skill">Visual Studio</span>
             </div>
             
-            <h3 style="margin-top: 20px;">Edição de Mídia:</h3>
+            <h3 style="margin-top: 20px;" data-en="Media Editing:" data-pt="Edição de Mídia:">Edição de Mídia:</h3>
             <div class="skills-container">
-                <span class="skill">Criação de flyers</span>
+                <span class="skill" data-en="Flyer creation" data-pt="Criação de flyers">Criação de flyers</span>
                 <span class="skill">Cards</span>
-                <span class="skill">Materiais visuais para redes sociais</span>
+                <span class="skill" data-en="Visual materials for social media" data-pt="Materiais visuais para redes sociais">Materiais visuais para redes sociais</span>
             </div>
         </section>
         
         <section id="idiomas">
-            <h2 class="section-title">Idiomas</h2>
+            <h2 class="section-title" data-en="Languages" data-pt="Idiomas">Idiomas</h2>
             <div class="skills-container">
-                <span class="skill">Português - Nativo</span>
-                <span class="skill">Inglês - Intermediário</span>
+                <span class="skill" data-en="Portuguese - Native" data-pt="Português - Nativo">Português - Nativo</span>
+                <span class="skill" data-en="English - Intermediate" data-pt="Inglês - Intermediário">Inglês - Intermediário</span>
             </div>
         </section>
     </main>
     
     <footer>
         <div class="container">
-            <p>&copy; 2024 Arthur Candian Rocha - Portfólio Profissional</p>
+            <p data-en="&copy; 2024 Arthur Candian Rocha - Professional Portfolio" data-pt="&copy; 2024 Arthur Candian Rocha - Portfólio Profissional">&copy; 2024 Arthur Candian Rocha - Portfólio Profissional</p>
         </div>
     </footer>
 
@@ -604,6 +708,8 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
     <script src="js/three-background.js"></script>
     <script src="js/three-scroll-animation.js"></script>
+    <script src="js/theme-language.js"></script>
+    <script src="js/eye-theme-connector.js"></script>
     
     <script>
         // Intersection Observer for scroll animations

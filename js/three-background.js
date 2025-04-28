@@ -1,12 +1,54 @@
 // Configuração do Three.js para o background do portfólio
 let scene, camera, renderer, particles;
 let mouseX = 0, mouseY = 0;
+let isDarkMode = false;
 
 // Coordenadas do mouse
 document.addEventListener('mousemove', (event) => {
     mouseX = (event.clientX - window.innerWidth / 2) / 100;
     mouseY = (event.clientY - window.innerHeight / 2) / 100;
 });
+
+// Listen for theme changes
+document.addEventListener('themeChanged', (event) => {
+    isDarkMode = event.detail.isDarkMode;
+    updateParticleColors();
+});
+
+function updateParticleColors() {
+    if (!particles || !particles.geometry) return;
+    
+    const colorsArray = particles.geometry.attributes.color.array;
+    const particlesCount = colorsArray.length / 3;
+    
+    for(let i = 0; i < particlesCount * 3; i += 3) {
+        if (isDarkMode) {
+            // Dark mode colors - brighter particles
+            if (i % 6 === 0) {
+                colorsArray[i] = Math.random() * 0.3 + 0.7; // R - higher for more visibility
+                colorsArray[i+1] = Math.random() * 0.2; // G - low
+                colorsArray[i+2] = Math.random() * 0.3; // B - low
+            } else {
+                colorsArray[i] = Math.random() * 0.2; // R - low
+                colorsArray[i+1] = Math.random() * 0.2; // G - low
+                colorsArray[i+2] = Math.random() * 0.5 + 0.5; // B - higher for more visibility
+            }
+        } else {
+            // Light mode colors - original scheme
+            if (i % 6 === 0) {
+                colorsArray[i] = Math.random() * 0.2 + 0.8; // R - high for red
+                colorsArray[i+1] = Math.random() * 0.1; // G - low
+                colorsArray[i+2] = Math.random() * 0.2; // B - low
+            } else {
+                colorsArray[i] = Math.random() * 0.1; // R - low
+                colorsArray[i+1] = Math.random() * 0.1; // G - low
+                colorsArray[i+2] = Math.random() * 0.3 + 0.7; // B - high for blue
+            }
+        }
+    }
+    
+    particles.geometry.attributes.color.needsUpdate = true;
+}
 
 function init() {
     // Configuração da cena
@@ -37,20 +79,37 @@ function init() {
     const posArray = new Float32Array(particlesCount * 3);
     const colorsArray = new Float32Array(particlesCount * 3);
     
+    // Check if dark mode is active
+    isDarkMode = document.body.classList.contains('dark-mode');
+    
     // Definir posições e cores aleatórias para as partículas
     for(let i = 0; i < particlesCount * 3; i++) {
         // Posições
         posArray[i] = (Math.random() - 0.5) * 60;
         
-        // Cores - tons de azul e vermelho para matching com a cor secundária do portfólio
-        if (i % 3 === 0) {
-            colorsArray[i] = Math.random() * 0.2 + 0.8; // R - valor alto para vermelho
-            colorsArray[i+1] = Math.random() * 0.1; // G - baixo
-            colorsArray[i+2] = Math.random() * 0.2; // B - baixo
+        // Cores baseadas no tema atual
+        if (isDarkMode) {
+            // Dark mode colors - brighter particles
+            if (i % 6 === 0) {
+                colorsArray[i] = Math.random() * 0.3 + 0.7; // R - higher for more visibility
+                colorsArray[i+1] = Math.random() * 0.2; // G - low
+                colorsArray[i+2] = Math.random() * 0.3; // B - low
+            } else {
+                colorsArray[i] = Math.random() * 0.2; // R - low
+                colorsArray[i+1] = Math.random() * 0.2; // G - low
+                colorsArray[i+2] = Math.random() * 0.5 + 0.5; // B - higher for more visibility
+            }
         } else {
-            colorsArray[i] = Math.random() * 0.1; // R - baixo
-            colorsArray[i+1] = Math.random() * 0.1; // G - baixo
-            colorsArray[i+2] = Math.random() * 0.3 + 0.7; // B - alto para azul
+            // Light mode colors - original scheme
+            if (i % 6 === 0) {
+                colorsArray[i] = Math.random() * 0.2 + 0.8; // R - high for red
+                colorsArray[i+1] = Math.random() * 0.1; // G - low
+                colorsArray[i+2] = Math.random() * 0.2; // B - low
+            } else {
+                colorsArray[i] = Math.random() * 0.1; // R - low
+                colorsArray[i+1] = Math.random() * 0.1; // G - low
+                colorsArray[i+2] = Math.random() * 0.3 + 0.7; // B - high for blue
+            }
         }
     }
     

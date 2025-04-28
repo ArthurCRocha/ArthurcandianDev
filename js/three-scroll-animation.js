@@ -3,6 +3,7 @@ let scrollScene, scrollCamera, scrollRenderer;
 let eye; 
 let mouseX = 0, mouseY = 0;
 let targetX = 0, targetY = 0;
+let irisGroup; // Grupo para a íris e pupila
 
 // Adicionar event listener para seguir o mouse
 document.addEventListener('mousemove', (event) => {
@@ -12,7 +13,8 @@ document.addEventListener('mousemove', (event) => {
 
 function initScrollAnimation() {
     // Container onde será inserido o canvas
-    const container = document.getElementById('scroll-animation-container');
+    const container = document.getElementById('eye-animation-container');
+    if (!container) return;
     
     // Configuração da cena
     scrollScene = new THREE.Scene();
@@ -37,7 +39,7 @@ function initScrollAnimation() {
     directionalLight.position.set(5, 5, 5);
     scrollScene.add(directionalLight);
     
-    // Criação do globo ocular (esfera)
+    // Criação do globo ocular (esfera principal - branco do olho)
     const eyeGeometry = new THREE.SphereGeometry(1, 32, 32);
     const eyeMaterial = new THREE.MeshStandardMaterial({ 
         color: 0xffffff,
@@ -47,16 +49,20 @@ function initScrollAnimation() {
     eye = new THREE.Mesh(eyeGeometry, eyeMaterial);
     scrollScene.add(eye);
     
-    // Criação da íris/pupila
+    // Grupo para a íris e pupila, para que se movam juntas
+    irisGroup = new THREE.Group();
+    eye.add(irisGroup);
+    irisGroup.position.z = 0.85; // Posiciona na frente do olho
+    
+    // Criação da íris colorida
     const irisGeometry = new THREE.SphereGeometry(0.5, 32, 32);
     const irisMaterial = new THREE.MeshStandardMaterial({ 
-        color: 0xe63946, // Cor secundária do seu site
+        color: isDarkMode() ? 0x3498db : 0xe63946, // Cor baseada no tema
         roughness: 0.1,
         metalness: 0.2
     });
     const iris = new THREE.Mesh(irisGeometry, irisMaterial);
-    iris.position.z = 0.85; // Posiciona na frente do olho
-    eye.add(iris);
+    irisGroup.add(iris);
     
     // Criação da pupila (centro do olho)
     const pupilGeometry = new THREE.SphereGeometry(0.25, 32, 32);
@@ -67,10 +73,30 @@ function initScrollAnimation() {
     });
     const pupil = new THREE.Mesh(pupilGeometry, pupilMaterial);
     pupil.position.z = 0.2; // Posiciona na frente da íris
-    iris.add(pupil);
+    irisGroup.add(pupil);
+    
+    // Adicionar reflexo nos olhos (pequena esfera branca)
+    const reflectionGeometry = new THREE.SphereGeometry(0.08, 16, 16);
+    const reflectionMaterial = new THREE.MeshBasicMaterial({ color: 0xffffff });
+    const reflection = new THREE.Mesh(reflectionGeometry, reflectionMaterial);
+    reflection.position.set(0.15, 0.15, 0.3); // Posiciona no canto superior direito da pupila
+    irisGroup.add(reflection);
+    
+    // Reflexo secundário menor
+    const reflection2 = new THREE.Mesh(
+        new THREE.SphereGeometry(0.04, 16, 16),
+        reflectionMaterial
+    );
+    reflection2.position.set(-0.10, -0.10, 0.3); // Posiciona no canto inferior esquerdo da pupila
+    irisGroup.add(reflection2);
+    
+    // Adicionar "pálpebras" (semiesferas achatadas)
+    createEyelid(true);  // Pálpebra superior
+    createEyelid(false); // Pálpebra inferior
     
     // Responde ao redimensionamento da janela
     window.addEventListener('resize', () => {
+        if (!container) return;
         scrollCamera.aspect = container.clientWidth / container.clientHeight;
         scrollCamera.updateProjectionMatrix();
         scrollRenderer.setSize(container.clientWidth, container.clientHeight);
@@ -80,32 +106,116 @@ function initScrollAnimation() {
     animateScroll();
 }
 
+// Função para criar as pálpebras
+function createEyelid(isUpper) {
+    const eyelidGeometry = new THREE.SphereGeometry(1.01, 32, 16, 0, Math.PI * 2, 0, Math.PI / 2);
+    const eyelidMaterial = new THREE.MeshStandardMaterial({ 
+        color: 0xdddddd,
+        side: THREE.DoubleSide,
+        roughness: 0.4
+    });
+    
+    const eyelid = new THREE.Mesh(eyelidGeometry, eyelidMaterial);
+    
+    if (isUpper) {
+        eyelid.rotation.x = Math.PI;
+        eyelid.position.y = 0.02; // Pequena sobreposição com o olho
+    } else {
+        eyelid.position.y = -0.02; // Pequena sobreposição com o olho
+    }
+    
+    eyelid.userData = { isUpper }; // Armazenar qual pálpebra é
+    eye.add(eyelid);
+    
+    return eyelid;
+}
+
+// Verifica se o modo escuro está ativo
+function isDarkMode() {
+    return document.body.classList.contains('dark-mode');
+}
+
+// Função para atualizar cores baseado no tema
+function updateEyeColors() {
+    if (!irisGroup || !irisGroup.children || irisGroup.children.length < 1) return;
+    
+    // Atualiza a cor da íris baseada no tema atual
+    const iris = irisGroup.children[0];
+    if (iris && iris.material) {
+        iris.material.color.set(isDarkMode() ? 0x3498db : 0xe63946);
+    }
+}
+
+// Adicionar listener para mudanças de tema
+document.addEventListener('themeChanged', updateEyeColors);
+
 function animateScroll() {
     requestAnimationFrame(animateScroll);
+    
+    if (!scrollRenderer) return;
     
     // Obter posição de scroll para animar a rotação
     const scrollPosition = window.scrollY;
     const maxScroll = document.body.scrollHeight - window.innerHeight;
     const scrollFraction = scrollPosition / maxScroll;
     
-    // Interpolação suave para seguir o mouse
-    targetX = mouseX * 0.5; // Limita o movimento
-    targetY = mouseY * 0.5;
+    // Limite o movimento do olho
+    const maxEyeRotation = 0.3;
+    targetX = mouseX * maxEyeRotation;
+    targetY = mouseY * maxEyeRotation;
+    
+    // Movimento de íris/pupila (mais realista)
+    if (irisGroup) {
+        // Movimento mais limitado para a íris (70% do movimento do mouse)
+        const irisMovementFactor = 0.2; 
+        irisGroup.position.x = THREE.MathUtils.lerp(irisGroup.position.x, mouseX * irisMovementFactor, 0.05);
+        irisGroup.position.y = THREE.MathUtils.lerp(irisGroup.position.y, mouseY * irisMovementFactor, 0.05);
+        
+        // Manter a íris na superfície do olho
+        const distanceFromCenter = Math.sqrt(irisGroup.position.x**2 + irisGroup.position.y**2);
+        const maxDistance = 0.5; // Limitar quão longe a íris pode ir
+        
+        if (distanceFromCenter > maxDistance) {
+            const angle = Math.atan2(irisGroup.position.y, irisGroup.position.x);
+            irisGroup.position.x = Math.cos(angle) * maxDistance;
+            irisGroup.position.y = Math.sin(angle) * maxDistance;
+        }
+        
+        // Manter a posição Z constante
+        irisGroup.position.z = 0.85;
+    }
     
     // Rotação do olho para seguir o mouse com efeito smooth
-    eye.rotation.y += (targetX - eye.rotation.y) * 0.1;
-    eye.rotation.x += (targetY - eye.rotation.x) * 0.1;
+    eye.rotation.y += (targetX - eye.rotation.y) * 0.05;
+    eye.rotation.x += (targetY - eye.rotation.x) * 0.05;
     
     // Pequena animação com base no scroll para dar movimento adicional
-    eye.position.y = Math.sin(scrollFraction * Math.PI * 2) * 0.2;
+    eye.position.y = Math.sin(scrollFraction * Math.PI * 2) * 0.05;
     
-    // Piscar o olho ocasionalmente (baseado no tempo)
+    // Piscar o olho ocasionalmente
     const time = Date.now() * 0.001;
-    if (Math.sin(time) > 0.99) {
-        eye.scale.y = 0.1; // Olho quase fechado
-    } else {
-        eye.scale.y = 1 + Math.sin(time * 0.5) * 0.1; // Variação suave na altura
+    const blinkInterval = 4; // Intervalo de piscar em segundos
+    const blinkDuration = 0.2; // Duração do piscar em segundos
+    
+    const modTime = time % blinkInterval;
+    let blinkAmount = 0;
+    
+    if (modTime < blinkDuration) {
+        // Calcular quanto a pálpebra deve fechar (0 = aberto, 1 = fechado)
+        blinkAmount = Math.sin((modTime / blinkDuration) * Math.PI);
     }
+    
+    // Animar as pálpebras
+    eye.children.forEach(child => {
+        if (child.userData && child.userData.hasOwnProperty('isUpper')) {
+            const isUpper = child.userData.isUpper;
+            const rotationDirection = isUpper ? -1 : 1;
+            const baseRotation = isUpper ? Math.PI : 0;
+            const targetRotation = baseRotation + rotationDirection * (blinkAmount * 0.5);
+            
+            child.rotation.x = targetRotation;
+        }
+    });
     
     scrollRenderer.render(scrollScene, scrollCamera);
 }
@@ -114,28 +224,9 @@ function animateScroll() {
 document.addEventListener('DOMContentLoaded', () => {
     // Verifica se há suporte para WebGL antes de inicializar
     if (WebGLRenderingContext) {
-        // Cria o container para a animação se ainda não existir
-        if (!document.getElementById('scroll-animation-container')) {
-            const container = document.createElement('div');
-            container.id = 'scroll-animation-container';
-            container.style.width = '300px';
-            container.style.height = '300px';
-            container.style.position = 'relative';
-            container.style.margin = '30px auto';
-            container.style.borderRadius = '150px'; // Forma circular para o container
-            container.style.overflow = 'hidden';
-            container.style.boxShadow = '0 0 20px rgba(230, 57, 70, 0.5)'; // Brilho com cor secundária
-            
-            // Insere o container antes da seção Projetos
-            const projectsSection = document.getElementById('projetos');
-            if (projectsSection) {
-                projectsSection.parentNode.insertBefore(container, projectsSection);
-            } else {
-                // Fallback se não encontrar a seção de projetos
-                document.body.appendChild(container);
-            }
-        }
-        
-        initScrollAnimation();
+        // Inicializa depois de um breve delay para garantir que o DOM esteja totalmente carregado
+        setTimeout(initScrollAnimation, 100);
+    } else {
+        console.warn('WebGL não suportado. Não foi possível inicializar animação de olho.');
     }
 });
