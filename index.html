@@ -37,12 +37,15 @@
         }
         
         header {
-            background: var(--dark);
+            background: rgba(0, 0, 0, 0.8);
             color: var(--primary);
             padding: 60px 0 40px;
             text-align: center;
             position: relative;
             overflow: hidden;
+            z-index: 1;
+            backdrop-filter: blur(5px);
+            -webkit-backdrop-filter: blur(5px);
         }
         
         header::before {
@@ -163,6 +166,11 @@
             opacity: 0;
             transform: translateY(20px);
             transition: opacity 0.5s ease, transform 0.5s ease;
+            position: relative;
+            z-index: 1;
+            backdrop-filter: blur(5px);
+            -webkit-backdrop-filter: blur(5px);
+            background: rgba(255, 255, 255, 0.85);
         }
         
         section.visible {
@@ -327,7 +335,11 @@
             padding: 40px 0;
             color: var(--dark);
             font-size: 0.9rem;
-            background-color: var(--light);
+            background-color: rgba(241, 241, 241, 0.9);
+            position: relative;
+            z-index: 1;
+            backdrop-filter: blur(5px);
+            -webkit-backdrop-filter: blur(5px);
         }
         
         footer p {
@@ -391,9 +403,24 @@
         .highlight {
             color: var(--secondary);
         }
+        
+        /* Estilo para o canvas do Three.js */
+        canvas#bg-canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1; /* Coloca o canvas atrás de todo o conteúdo */
+            pointer-events: none; /* Permite que cliques passem pelo canvas */
+            opacity: 0.6; /* Ajusta a opacidade para não competir com o conteúdo */
+        }
     </style>
 </head>
 <body>
+    <!-- Canvas para Three.js -->
+    <canvas id="bg-canvas"></canvas>
+    
     <header class="animate__animated animate__fadeIn">
         <div class="container">
             <div class="profile-container">
@@ -573,6 +600,10 @@
     <div class="scroll-top" id="scrollTop">
         <i class="fas fa-arrow-up"></i>
     </div>
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="js/three-background.js"></script>
+    <script src="js/three-scroll-animation.js"></script>
     
     <script>
         // Intersection Observer for scroll animations
