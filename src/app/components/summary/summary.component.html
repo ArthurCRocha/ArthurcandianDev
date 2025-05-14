@@ -1,0 +1,13 @@
+<h2 class="section-title">
+  {{ languageService.getCurrentLanguage() === 'en' ? 'Professional Summary' : 'Resumo Profissional' }}
+</h2>
+<div class="content">
+  <p>
+    <ng-container *ngIf="languageService.getCurrentLanguage() === 'en'">
+      Computer Science student with experience in web development and graphic design. I seek to integrate technical and creative knowledge to contribute to innovative projects. I have practical experience as a web development intern and in marketing positions, combining technical skills with strategic <span class="highlight">vision</span>.
+    </ng-container>
+    <ng-container *ngIf="languageService.getCurrentLanguage() === 'pt-BR'">
+      Estudante de Ciência da Computação com experiência em desenvolvimento web e design gráfico. Busco integrar conhecimentos técnicos e criativos para contribuir em projetos inovadores. Possuo experiência prática como estagiário de desenvolvimento web e em cargos de marketing, combinando habilidades técnicas com visão <span class="highlight">estratégica</span>.
+    </ng-container>
+  </p>
+</div>

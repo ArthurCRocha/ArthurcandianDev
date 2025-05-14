@@ -1,0 +1,84 @@
+:host {
+  --primary: #ffffff;
+  --secondary: #e63946;
+  --dark: #000000;
+  --light: #f1f1f1;
+  --gray: #777777;
+  --shadow: rgba(0, 0, 0, 0.1);
+  --bg-color: #ffffff;
+  --text-color: #000000;
+  --header-bg: rgba(0, 0, 0, 0.8);
+  --header-text: #ffffff;
+  --section-bg: rgba(255, 255, 255, 0.85);
+  --footer-bg: rgba(241, 241, 241, 0.9);
+  --card-bg: #ffffff;
+  --content-text: #333333;
+  --transition-time: 0.3s;
+}
+
+/* Dark mode variables */
+:host-context(body.dark-mode), :host(.dark-mode) {
+  --primary: #1a1a1a;
+  --secondary: #e63946;
+  --dark: #f1f1f1; /* Text color in dark mode */
+  --light: #333333;
+  --gray: #aaaaaa;
+  --shadow: rgba(255, 255, 255, 0.1);
+  --bg-color: #121212;
+  --text-color: #f1f1f1;
+  --header-bg: rgba(26, 26, 26, 0.9);
+  --header-text: #ffffff;
+  --section-bg: rgba(26, 26, 26, 0.9);
+  --footer-bg: rgba(26, 26, 26, 0.9);
+  --card-bg: #1e1e1e;
+  --content-text: #e0e0e0; /* Lighter text for better contrast in dark mode */
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  transition: all var(--transition-time) ease;
+}
+
+body {
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  line-height: 1.6;
+  color: var(--text-color);
+  background-color: var(--bg-color);
+}
+
+.container {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 0 20px;
+}
+
+.scroll-top {
+  position: fixed;
+  bottom: 30px;
+  right: 30px;
+  width: 50px;
+  height: 50px;
+  background-color: var(--secondary);
+  color: var(--primary);
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+  opacity: 0;
+  visibility: hidden;
+  transition: all 0.4s;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+  z-index: 1000;
+}
+
+.scroll-top.visible {
+  opacity: 1;
+  visibility: visible;
+}
+
+.scroll-top:hover {
+  transform: translateY(-5px);
+}

@@ -1,0 +1,5 @@
+@import '../shared/section.component.css';
+
+.highlight {
+  color: var(--secondary);
+}

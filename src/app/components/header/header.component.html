@@ -1,0 +1,40 @@
+<div id="eye-animation-container"></div>
+
+<div class="toggle-container">
+  <button id="theme-toggle" class="toggle-btn" aria-label="Toggle dark/light mode" (click)="toggleTheme.emit()">
+    <i class="fas" [class.fa-moon]="!isDarkMode" [class.fa-sun]="isDarkMode"></i>
+  </button>
+  <button id="lang-toggle" class="toggle-btn" aria-label="Toggle language" (click)="toggleLanguage.emit()">
+    <i class="fas fa-language"></i>
+  </button>
+</div>
+
+<header class="animate__animated animate__fadeIn">
+  <div class="container">
+    <div class="profile-container">
+      <h1 class="profile-name">ARTHUR CANDIAN ROCHA</h1>
+      <h2 class="profile-title">
+        {{ languageService.getCurrentLanguage() === 'en' ? 'Computer Science Student' : 'Estudante de Ciências da Computação' }}
+      </h2>
+    </div>
+    
+    <div class="contact-info animate__animated animate__fadeInUp animate__delay-1s">
+      <div class="contact-item">
+        <i class="fas fa-phone"></i>
+        <span>(32) 98493-0123</span>
+      </div>
+      <div class="contact-item">
+        <i class="fas fa-envelope"></i>
+        <a href="mailto:arthurcandiann@gmail.com">arthurcandiann@gmail.com</a>
+      </div>
+      <div class="contact-item">
+        <i class="fab fa-github"></i>
+        <a href="https://github.com/ArthurCRocha" target="_blank" rel="noopener noreferrer">github.com/ArthurCRocha</a>
+      </div>
+      <div class="contact-item">
+        <i class="fab fa-linkedin"></i>
+        <a href="https://linkedin.com/in/arthur-candian-rocha" target="_blank" rel="noopener noreferrer">linkedin.com/in/arthur-candian-rocha</a>
+      </div>
+    </div>
+  </div>
+</header>
